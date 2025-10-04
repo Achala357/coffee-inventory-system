@@ -8,7 +8,6 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch products on load
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -27,7 +26,6 @@ export default function ProductsPage() {
     }
   };
 
-  // Create or Update product
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -45,7 +43,6 @@ export default function ProductsPage() {
     }
   };
 
-  // Edit selected product
   const handleEdit = (product) => {
     setForm({
       name: product.name,
@@ -57,7 +54,6 @@ export default function ProductsPage() {
     setEditId(product._id);
   };
 
-  // Delete product
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
@@ -70,91 +66,129 @@ export default function ProductsPage() {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Products</h2>
+    <div className="page-container">
+      <section className="page-header">
+        <h2>Products</h2>
+        <p>Craft, roast, and monitor every blend stocked in your Island Brew Lanka shelves.</p>
+        {/* Coffee cup illustration area */}
+      </section>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={e => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Type"
-          value={form.type}
-          onChange={e => setForm({ ...form, type: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Quantity"
-          type="number"
-          value={form.quantity}
-          onChange={e => setForm({ ...form, quantity: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Unit"
-          value={form.unit}
-          onChange={e => setForm({ ...form, unit: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Price"
-          type="number"
-          value={form.price_per_unit}
-          onChange={e => setForm({ ...form, price_per_unit: e.target.value })}
-          required
-        />
-        <button type="submit">{editId ? "Update Product" : "Add Product"}</button>
-        {editId && (
-          <button type="button" onClick={() => { setEditId(null); setForm({ name: "", type: "", quantity: "", unit: "", price_per_unit: "" }); }}>
-            Cancel
-          </button>
-        )}
-      </form>
+      <div className="content-grid">
+        <section className="card">
+          <h3>{editId ? "Update Product" : "Add a New Roast"}</h3>
+          <p>Capture the aroma of every bag with precise details and pricing.</p>
+          <form onSubmit={handleSubmit} className="form-grid">
+            <input
+              placeholder="Coffee Name"
+              value={form.name}
+              onChange={e => setForm({ ...form, name: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Roast Type"
+              value={form.type}
+              onChange={e => setForm({ ...form, type: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Quantity"
+              type="number"
+              value={form.quantity}
+              onChange={e => setForm({ ...form, quantity: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Unit (e.g. kg, bags)"
+              value={form.unit}
+              onChange={e => setForm({ ...form, unit: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Price per Unit"
+              type="number"
+              value={form.price_per_unit}
+              onChange={e => setForm({ ...form, price_per_unit: e.target.value })}
+              required
+            />
+            <div className="form-actions">
+              <button type="submit" className="coffee-btn">
+                {editId ? "Save Product" : "Add Product"}
+              </button>
+              {editId && (
+                <button
+                  type="button"
+                  className="coffee-btn secondary"
+                  onClick={() => {
+                    setEditId(null);
+                    setForm({ name: "", type: "", quantity: "", unit: "", price_per_unit: "" });
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+          <div className="image-placeholder">{"// Coffee beans image placeholder"}</div>
+        </section>
 
-      {/* Status Messages */}
-      {loading && <p>Loading products...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <section className="card">
+          <h3>Existing Products</h3>
+          <p>Review the curated selection ready to brew.</p>
 
-      {/* Table */}
-      {!loading && !error && (
-        <table border="1" cellPadding="5" style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Quantity</th>
-              <th>Unit</th>
-              <th>Price</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.length > 0 ? (
-              products.map((p) => (
-                <tr key={p._id}>
-                  <td>{p.name}</td>
-                  <td>{p.type}</td>
-                  <td>{p.quantity}</td>
-                  <td>{p.unit}</td>
-                  <td>{p.price_per_unit}</td>
-                  <td>
-                    <button onClick={() => handleEdit(p)}>Edit</button>
-                    <button onClick={() => handleDelete(p._id)}>Delete</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" style={{ textAlign: "center" }}>No products available</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      )}
+          {loading && <p className="status-message loading">Loading products...</p>}
+          {error && <p className="status-message error">{error}</p>}
+
+          {!loading && !error && (
+            <div className="data-table-wrapper">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.length > 0 ? (
+                    products.map((p) => (
+                      <tr key={p._id}>
+                        <td>{p.name}</td>
+                        <td>{p.type}</td>
+                        <td>{p.quantity}</td>
+                        <td>{p.unit}</td>
+                        <td>{p.price_per_unit}</td>
+                        <td>
+                          <div className="table-actions">
+                            <button type="button" className="action-btn" onClick={() => handleEdit(p)}>
+                              ✏️ Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="action-btn delete"
+                              onClick={() => handleDelete(p._id)}
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: "center", padding: "1.5rem" }}>
+                        No products available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

@@ -30,11 +30,9 @@ export default function PurchasesPage() {
     e.preventDefault();
     try {
       if (editingId) {
-        // ✅ Update purchase
         await API.put(`/purchases/${editingId}`, form);
         setEditingId(null);
       } else {
-        // ✅ Create new purchase
         await API.post("/purchases", form);
       }
       fetchPurchases();
@@ -67,82 +65,123 @@ export default function PurchasesPage() {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Purchases</h2>
+    <div className="page-container">
+      <section className="page-header">
+        <h2>Purchases</h2>
+        <p>Trace every shipment that keeps our roastery brimming with beans.</p>
+        {/* Coffee delivery truck placeholder */}
+      </section>
 
-      {/* Purchase Form */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
-        <input
-          placeholder="Supplier"
-          value={form.supplier}
-          onChange={e => setForm({ ...form, supplier: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Product"
-          value={form.product}
-          onChange={e => setForm({ ...form, product: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Quantity"
-          type="number"
-          value={form.quantity}
-          onChange={e => setForm({ ...form, quantity: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Unit Price"
-          type="number"
-          value={form.unit_price}
-          onChange={e => setForm({ ...form, unit_price: e.target.value })}
-          required
-        />
-        <button type="submit">{editingId ? "Update Purchase" : "Add Purchase"}</button>
-        {editingId && (
-          <button type="button" onClick={() => { setEditingId(null); setForm({ supplier: "", product: "", quantity: "", unit_price: "" }); }}>
-            Cancel
-          </button>
-        )}
-      </form>
+      <div className="content-grid">
+        <section className="card">
+          <h3>{editingId ? "Update Purchase" : "Log a Purchase"}</h3>
+          <p>Record fresh arrivals from plantations and partners.</p>
+          <form onSubmit={handleSubmit} className="form-grid">
+            <input
+              placeholder="Supplier"
+              value={form.supplier}
+              onChange={e => setForm({ ...form, supplier: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Product"
+              value={form.product}
+              onChange={e => setForm({ ...form, product: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Quantity"
+              type="number"
+              value={form.quantity}
+              onChange={e => setForm({ ...form, quantity: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Unit Price"
+              type="number"
+              value={form.unit_price}
+              onChange={e => setForm({ ...form, unit_price: e.target.value })}
+              required
+            />
+            <div className="form-actions">
+              <button type="submit" className="coffee-btn">
+                {editingId ? "Save Purchase" : "Add Purchase"}
+              </button>
+              {editingId && (
+                <button
+                  type="button"
+                  className="coffee-btn secondary"
+                  onClick={() => {
+                    setEditingId(null);
+                    setForm({ supplier: "", product: "", quantity: "", unit_price: "" });
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+          <div className="image-placeholder">{"// Coffee warehouse scene placeholder"}</div>
+        </section>
 
-      {/* Loading / Error */}
-      {loading && <p>Loading purchases...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <section className="card">
+          <h3>Purchase History</h3>
+          <p>Ensure supply lines remain steady and sweet.</p>
 
-      {/* Purchases Table */}
-      {!loading && !error && (
-        <table border="1" cellPadding="5" style={{ marginTop: "1rem", width: "100%" }}>
-          <thead>
-            <tr>
-              <th>Supplier</th><th>Product</th><th>Quantity</th><th>Unit Price</th><th>Date</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {purchases.length > 0 ? (
-              purchases.map(p => (
-                <tr key={p._id}>
-                  <td>{p.supplier}</td>
-                  <td>{p.product}</td>
-                  <td>{p.quantity}</td>
-                  <td>{p.unit_price}</td>
-                  <td>{new Date(p.date).toLocaleDateString()}</td>
-                  <td>
-                    <button onClick={() => handleEdit(p)}>Edit</button>
-                    <button onClick={() => handleDelete(p._id)} style={{ marginLeft: "0.5rem", color: "red" }}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" style={{ textAlign: "center" }}>No purchases recorded</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      )}
+          {loading && <p className="status-message loading">Loading purchases...</p>}
+          {error && <p className="status-message error">{error}</p>}
+
+          {!loading && !error && (
+            <div className="data-table-wrapper">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Supplier</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {purchases.length > 0 ? (
+                    purchases.map(p => (
+                      <tr key={p._id}>
+                        <td>{p.supplier}</td>
+                        <td>{p.product}</td>
+                        <td>{p.quantity}</td>
+                        <td>{p.unit_price}</td>
+                        <td>{new Date(p.date).toLocaleDateString()}</td>
+                        <td>
+                          <div className="table-actions">
+                            <button type="button" className="action-btn" onClick={() => handleEdit(p)}>
+                              ✏️ Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="action-btn delete"
+                              onClick={() => handleDelete(p._id)}
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: "center", padding: "1.5rem" }}>
+                        No purchases recorded
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
