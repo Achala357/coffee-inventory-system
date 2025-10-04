@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import ProductsPage from "./pages/ProductsPage";
+import SuppliersPage from "./pages/SuppliersPage";
+import SalesPage from "./pages/SalesPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import "./index.css"; // optional for nav bar styling
+import PurchasesPage from "./pages/PurchasesPage";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/products" />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/suppliers" element={<SuppliersPage />} />
+          <Route path="/sales" element={<SalesPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/purchases" element={<PurchasesPage />} />
+
+        </Routes>
+      </main>
+    </Router>
   );
 }
 
