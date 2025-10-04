@@ -26,7 +26,6 @@ export default function SalesPage() {
     }
   };
 
-  // ✅ Create or Update sale
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -44,7 +43,6 @@ export default function SalesPage() {
     }
   };
 
-  // ✅ Edit sale
   const handleEdit = (sale) => {
     setForm({
       total: sale.total,
@@ -53,7 +51,6 @@ export default function SalesPage() {
     setEditId(sale._id);
   };
 
-  // ✅ Delete sale
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this sale record?")) return;
     try {
@@ -66,76 +63,106 @@ export default function SalesPage() {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Sales</h2>
+    <div className="page-container">
+      <section className="page-header">
+        <h2>Sales</h2>
+        <p>Brewed moments captured in every transaction across Island Brew Lanka cafés.</p>
+        {/* Coffee steam animation placeholder */}
+      </section>
 
-      {/* Sale form */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
-        <input
-          placeholder="Total Amount"
-          type="number"
-          value={form.total}
-          onChange={(e) => setForm({ ...form, total: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Payment Method"
-          value={form.payment_method}
-          onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
-          required
-        />
-        <button type="submit">{editId ? "Update Sale" : "Record Sale"}</button>
-        {editId && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditId(null);
-              setForm({ total: "", payment_method: "" });
-            }}
-          >
-            Cancel
-          </button>
-        )}
-      </form>
+      <div className="content-grid">
+        <section className="card">
+          <h3>{editId ? "Update Sale" : "Record a Sale"}</h3>
+          <p>Log each sip served to keep our ledgers as warm as our mugs.</p>
+          <form onSubmit={handleSubmit} className="form-grid">
+            <input
+              placeholder="Total Amount"
+              type="number"
+              value={form.total}
+              onChange={(e) => setForm({ ...form, total: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Payment Method"
+              value={form.payment_method}
+              onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
+              required
+            />
+            <div className="form-actions">
+              <button type="submit" className="coffee-btn">
+                {editId ? "Save Sale" : "Record Sale"}
+              </button>
+              {editId && (
+                <button
+                  type="button"
+                  className="coffee-btn secondary"
+                  onClick={() => {
+                    setEditId(null);
+                    setForm({ total: "", payment_method: "" });
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+          <div className="image-placeholder">{"// Coffee receipt illustration placeholder"}</div>
+        </section>
 
-      {/* Loading / Error */}
-      {loading && <p>Loading sales...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <section className="card">
+          <h3>Recent Sales</h3>
+          <p>Monitor daily sales activity and keep the brew counter thriving.</p>
 
-      {/* Sales Table */}
-      {!loading && !error && (
-        <table border="1" cellPadding="5" style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Total</th>
-              <th>Payment Method</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sales.length > 0 ? (
-              sales.map((s) => (
-                <tr key={s._id}>
-                  <td>{new Date(s.date).toLocaleDateString()}</td>
-                  <td>{s.total}</td>
-                  <td>{s.payment_method}</td>
-                  <td>
-                    <button onClick={() => handleEdit(s)}>Edit</button>
-                    <button onClick={() => handleDelete(s._id)}>Delete</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>
-                  No sales recorded
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      )}
+          {loading && <p className="status-message loading">Loading sales...</p>}
+          {error && <p className="status-message error">{error}</p>}
+
+          {!loading && !error && (
+            <div className="data-table-wrapper">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Payment Method</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sales.length > 0 ? (
+                    sales.map((s) => (
+                      <tr key={s._id}>
+                        <td>{new Date(s.date).toLocaleDateString()}</td>
+                        <td>{s.total}</td>
+                        <td>{s.payment_method}</td>
+                        <td>
+                          <div className="table-actions">
+                            <button type="button" className="action-btn" onClick={() => handleEdit(s)}>
+                              ✏️ Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="action-btn delete"
+                              onClick={() => handleDelete(s._id)}
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: "center", padding: "1.5rem" }}>
+                        No sales recorded
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
